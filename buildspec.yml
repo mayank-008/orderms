@@ -15,8 +15,8 @@ phases:
     commands:
       - echo Logging into Amazon ECR
       - aws --version
-      - $(aws ecr get-login --no-include-email --region us-east-2)
-      - REPOSITORY_URI=824342811803.dkr.ecr.us-east-2.amazonaws.com/usermanagement
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 098450198621.dkr.ecr.ap-south-1.amazonaws.com
+      - REPOSITORY_URI=098450198621.dkr.ecr.ap-south-1.amazonaws.com/orderms
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
       - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip
@@ -42,6 +42,6 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
-      - printf '[{"name":"userContainer","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - printf '[{"name":"orderContainer","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 artifacts:
     files: imagedefinitions.json
